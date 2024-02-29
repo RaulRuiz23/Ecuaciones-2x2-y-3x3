@@ -1,0 +1,63 @@
+import java.util.Scanner;
+public class ResolucionEcuaciones {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Ingrese el número de ecuaciones (2 o 3): ");
+        int numEcuaciones = scanner.nextInt();
+
+        if (numEcuaciones == 2 || numEcuaciones == 3) {
+            double[][] coeficientes = new double[numEcuaciones][numEcuaciones + 1];
+
+            System.out.println("Ingrese los coeficientes de las ecuaciones:");
+
+            for (int i = 0; i < numEcuaciones; i++) {
+                for (int j = 0; j < numEcuaciones + 1; j++) {
+                    System.out.print("Ingrese el coeficiente [" + (i + 1) + "][" + (j + 1) + "]: ");
+                    coeficientes[i][j] = scanner.nextDouble();
+                }
+            }
+
+            double[] soluciones = resolverSistema(coeficientes, numEcuaciones);
+
+            System.out.println("\nLas soluciones son:");
+
+            for (int i = 0; i < numEcuaciones; i++) {
+                System.out.println("x" + (i + 1) + " = " + soluciones[i]);
+            }
+        } else {
+            System.out.println("Número de ecuaciones no válido. El programa solo resuelve sistemas de 2x2 o 3x3.");
+        }
+
+        scanner.close();
+    }
+
+    private static double[] resolverSistema(double[][] coeficientes, int numEcuaciones) {
+        for (int i = 0; i < numEcuaciones; i++) {
+            // Hacer que el coeficiente diagonal sea 1
+            double diagValue = coeficientes[i][i];
+            for (int j = 0; j < numEcuaciones + 1; j++) {
+                coeficientes[i][j] /= diagValue;
+            }
+
+            // Hacer 0 los demás coeficientes en la columna
+            for (int k = 0; k < numEcuaciones; k++) {
+                if (k != i) {
+                    double factor = coeficientes[k][i];
+                    for (int j = 0; j < numEcuaciones + 1; j++) {
+                        coeficientes[k][j] -= factor * coeficientes[i][j];
+                    }
+                }
+            }
+        }
+
+        // Extraer las soluciones
+        double[] soluciones = new double[numEcuaciones];
+        for (int i = 0; i < numEcuaciones; i++) {
+            soluciones[i] = coeficientes[i][numEcuaciones];
+        }
+
+        return soluciones;
+    }
+}
+
